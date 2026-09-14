@@ -2,7 +2,7 @@
 set -euo pipefail
 
 project_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-release_root="$(dirname "$project_dir")"
+release_root="$(dirname "$project_dir")/releases"
 version="$(node -p "require(process.argv[1]).version" "$project_dir/package.json")"
 package_dir="${1:-$release_root/switchy-unpacked-$version}"
 archive_path="${2:-$release_root/switchy-$version.zip}"
@@ -12,6 +12,7 @@ if [[ -e "$package_dir" || -e "$archive_path" ]]; then
   exit 1
 fi
 
+mkdir -p "$release_root"
 mkdir "$package_dir"
 release_files=(
   manifest.json
