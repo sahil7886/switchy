@@ -22,6 +22,12 @@ test("manifest is MV3, uses the expected runtime files, and declares only requir
     ...Object.values(manifest.icons),
   ];
   for (const file of runtimeFiles) assert.equal(existsSync(path.join(ROOT, file)), true, file);
+
+  const onboarding = await readFile(path.join(ROOT, manifest.options_ui.page), "utf8");
+  for (const file of ["shortcut.js", "onboarding.js", "onboarding.css"]) {
+    assert.match(onboarding, new RegExp(`(?:src|href)="${file}"`), `onboarding references ${file}`);
+    assert.equal(existsSync(path.join(ROOT, file)), true, file);
+  }
 });
 
 test("store copy describes the protected-page and local-network limitations", async () => {

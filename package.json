@@ -1,11 +1,12 @@
 {
   "name": "switchy",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "private": true,
   "type": "module",
   "scripts": {
     "test": "node --test test/*.test.js",
-    "test:coverage": "node --test --experimental-test-coverage test/*.test.js"
+    "test:coverage": "node --test --experimental-test-coverage test/*.test.js",
+    "package:release": "./scripts/package-release.sh"
   },
   "devDependencies": {
     "jsdom": "^27.0.1"
