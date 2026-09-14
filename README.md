@@ -21,3 +21,7 @@ The extension stores only tab IDs in `chrome.storage.session` and the chosen sho
 4. The onboarding tab opens automatically. Choose a shortcut there, or later by clicking the extension toolbar button.
 
 `demo.html` is a static visual preview of the UI.
+
+## Test
+
+Run `npm ci` once, then `npm test`. The suite covers shortcut validation, onboarding capture and storage behavior, favicon safety, the responsive switcher UI, service-worker MRU/session handling, injection recovery, and manifest integrity.

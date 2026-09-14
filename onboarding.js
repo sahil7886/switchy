@@ -29,9 +29,10 @@
   }
 
   function startListening() {
+    if (listening) return;
     listening = true;
     render("Press Control or Option (Alt), then a regular key. Press Esc to stop.");
-    captureButton.focus();
+    captureButton.focus({ preventScroll: true });
   }
 
   function stopListening(message, isError = false) {
@@ -40,19 +41,20 @@
   }
 
   async function save(nextShortcut) {
-    shortcut = nextShortcut;
     try {
-      await chrome.storage.local.set({ [shortcutApi.STORAGE_KEY]: shortcut });
+      await chrome.storage.local.set({ [shortcutApi.STORAGE_KEY]: nextShortcut });
+      shortcut = nextShortcut;
       stopListening(`Saved: ${shortcutApi.format(shortcut)}. Add Shift to cycle backward.`);
     } catch {
       stopListening("The shortcut could not be saved. Please try again.", true);
     }
   }
 
-  captureButton.addEventListener("click", startListening);
-  captureButton.addEventListener("blur", () => {
-    if (listening) stopListening(`Still using ${shortcutApi.format(shortcut)}.`);
+  captureButton.addEventListener("pointerdown", (event) => {
+    event.preventDefault();
+    startListening();
   });
+  captureButton.addEventListener("click", startListening);
 
   reset.addEventListener("click", () => {
     listening = false;
@@ -75,7 +77,9 @@
 
     const result = shortcutApi.validateEvent(event);
     if (!result.valid) {
-      stopListening(result.reason, true);
+      // Keep capture active so a mistyped or unsupported shortcut can be
+      // corrected immediately without requiring another click.
+      render(result.reason, true);
       return;
     }
     void save(result.shortcut);

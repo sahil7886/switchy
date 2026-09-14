@@ -1,0 +1,13 @@
+{
+  "name": "switchy",
+  "version": "0.4.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "test:coverage": "node --test --experimental-test-coverage test/*.test.js"
+  },
+  "devDependencies": {
+    "jsdom": "^27.0.1"
+  }
+}

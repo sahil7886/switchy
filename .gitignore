@@ -4,5 +4,9 @@ video-edit/
 # Generated Web Store upload archives.
 *.zip
 
+# Local test dependencies and coverage output.
+node_modules/
+coverage/
+
 # macOS metadata.
 .DS_Store
