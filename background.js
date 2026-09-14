@@ -2,6 +2,7 @@ import "./favicon-guard.js";
 
 const MAX_TABS = 9;
 const SESSION_KEY = "recent-tab-switcher:mru:v1";
+const ONBOARDING_SEEN_KEY = "recent-tab-switcher:onboarding-seen:v1";
 
 /** @type {Map<number, number[]>} */
 const mruByWindow = new Map();
@@ -16,12 +17,20 @@ chrome.action.onClicked.addListener(() => {
   void chrome.runtime.openOptionsPage();
 });
 
-chrome.runtime.onInstalled.addListener(async ({ reason }) => {
-  await injectIntoOpenTabs();
-  setTimeout(() => void injectIntoOpenTabs(), 1000);
+chrome.runtime.onInstalled.addListener(({ reason }) => {
+  // Create the welcome tab first. Service workers can be suspended once an
+  // event handler finishes, so making onboarding wait on page injection made
+  // a first-run tab needlessly fragile.
   if (reason === "install") {
-    await chrome.tabs.create({ url: chrome.runtime.getURL("onboarding.html") });
+    void openOnboarding();
+  } else if (reason === "update") {
+    // Existing unpacked installs predating the seen marker get one welcome
+    // tab on their next reload; completed onboarding never reopens on update.
+    void openOnboardingIfNeeded();
   }
+
+  void injectIntoOpenTabs();
+  setTimeout(() => void injectIntoOpenTabs(), 1000);
 });
 
 chrome.runtime.onStartup.addListener(() => {
@@ -178,6 +187,26 @@ async function injectIntoOpenTabs() {
   } catch {
     // Protected browser pages are intentionally skipped. Manifest-declared
     // content scripts still cover ordinary pages on their next navigation.
+  }
+}
+
+async function openOnboardingIfNeeded() {
+  try {
+    const stored = await chrome.storage.local.get(ONBOARDING_SEEN_KEY);
+    if (stored[ONBOARDING_SEEN_KEY]) return;
+  } catch {
+    // Storage should be available, but a welcome tab is still more useful
+    // than silently skipping onboarding if the read is transiently unavailable.
+  }
+  await openOnboarding();
+}
+
+async function openOnboarding() {
+  try {
+    await chrome.tabs.create({ url: chrome.runtime.getURL("onboarding.html") });
+  } catch {
+    // There is no useful fallback for a browser that refuses to create tabs.
+    // The toolbar button continues to open this page via openOptionsPage().
   }
 }
 

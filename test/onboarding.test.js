@@ -46,6 +46,13 @@ test("onboarding click starts shortcut capture and remains active after blur", a
   assert.match(window.document.querySelector("#shortcut-status").textContent, /Press Control/);
 });
 
+test("onboarding marks the welcome screen seen once it has rendered", async () => {
+  const { setCalls } = await bootOnboarding();
+  assert.deepEqual(JSON.parse(JSON.stringify(setCalls)), [
+    { "recent-tab-switcher:onboarding-seen:v1": true },
+  ]);
+});
+
 test("onboarding captures and persists a valid shortcut", async () => {
   const { window, setCalls } = await bootOnboarding();
   const capture = window.document.querySelector("#shortcut-capture");
@@ -55,7 +62,7 @@ test("onboarding captures and persists a valid shortcut", async () => {
   await flush(window);
 
   assert.equal(event.defaultPrevented, true);
-  assert.deepEqual(JSON.parse(JSON.stringify(setCalls)), [{ "recent-tab-switcher:shortcut:v1": { ctrl: true, alt: false, code: "KeyZ" } }]);
+  assert.deepEqual(JSON.parse(JSON.stringify(setCalls)).slice(-1), [{ "recent-tab-switcher:shortcut:v1": { ctrl: true, alt: false, code: "KeyZ" } }]);
   assert.equal(window.document.querySelector("#shortcut-value").textContent, "Control + Z");
   assert.equal(capture.classList.contains("listening"), false);
   assert.match(window.document.querySelector("#shortcut-status").textContent, /Saved: Control \+ Z/);
@@ -73,7 +80,7 @@ test("an invalid shortcut explains the problem and lets the user correct it with
 
   keydown(window, { key: "z", code: "KeyZ", ctrlKey: true });
   await flush(window);
-  assert.equal(setCalls.length, 1);
+  assert.equal(setCalls.length, 2);
   assert.equal(window.document.querySelector("#shortcut-value").textContent, "Control + Z");
 });
 
@@ -84,7 +91,7 @@ test("Escape cancels capture without changing the saved shortcut", async () => {
 
   keydown(window, { key: "Escape", code: "Escape" });
 
-  assert.equal(setCalls.length, 0);
+  assert.equal(setCalls.length, 1);
   assert.equal(capture.classList.contains("listening"), false);
   assert.equal(window.document.querySelector("#shortcut-value").textContent, "Control + `");
   assert.match(window.document.querySelector("#shortcut-status").textContent, /Kept Control \+ `/);
@@ -110,6 +117,6 @@ test("reset restores the default shortcut", async () => {
   window.document.querySelector("#reset-shortcut").click();
   await flush(window);
 
-  assert.deepEqual(JSON.parse(JSON.stringify(setCalls)), [{ "recent-tab-switcher:shortcut:v1": { ctrl: true, alt: false, code: "Backquote" } }]);
+  assert.deepEqual(JSON.parse(JSON.stringify(setCalls)).slice(-1), [{ "recent-tab-switcher:shortcut:v1": { ctrl: true, alt: false, code: "Backquote" } }]);
   assert.equal(window.document.querySelector("#shortcut-value").textContent, "Control + `");
 });

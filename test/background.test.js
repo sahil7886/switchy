@@ -22,6 +22,7 @@ function makeChrome(tabs) {
   const injected = [];
   const createdTabs = [];
   const sessionData = {};
+  const localData = {};
 
   const chrome = {
     action: { onClicked: events.actionClicked },
@@ -33,6 +34,10 @@ function makeChrome(tabs) {
       openOptionsPage: async () => undefined,
     },
     storage: {
+      local: {
+        get: async (key) => ({ [key]: localData[key] }),
+        set: async (value) => Object.assign(localData, value),
+      },
       session: {
         get: async (key) => ({ [key]: sessionData[key] }),
         set: async (value) => Object.assign(sessionData, value),
@@ -62,7 +67,7 @@ function makeChrome(tabs) {
       executeScript: async (details) => injected.push(details),
     },
   };
-  return { chrome, events, sentMessages, updatedTabs, injected, createdTabs, sessionData };
+  return { chrome, events, sentMessages, updatedTabs, injected, createdTabs, sessionData, localData };
 }
 
 async function bootBackground(tabs) {
@@ -92,14 +97,15 @@ async function settle() {
   for (let index = 0; index < 8; index += 1) await new Promise((resolve) => setImmediate(resolve));
 }
 
-test("background injects existing normal tabs and skips protected browser tabs", async () => {
+test("background opens onboarding before injection, then injects normal open tabs", async () => {
   const background = await bootBackground([
     { id: 1, windowId: 1, active: true, url: "https://example.com", lastAccessed: 30 },
     { id: 2, windowId: 1, active: false, url: "http://example.org", lastAccessed: 20 },
     { id: 3, windowId: 1, active: false, url: "chrome://extensions", lastAccessed: 10 },
   ]);
   try {
-    await background.events.installed.listeners[0]({ reason: "install" });
+    background.events.installed.listeners[0]({ reason: "install" });
+    await settle();
     assert.deepEqual(background.injected.map((entry) => entry.target.tabId), [1, 2]);
     assert.deepEqual(background.injected[0].files, ["shortcut.js", "favicon-guard.js", "switcher.js"]);
     assert.deepEqual(background.createdTabs, [{ url: "chrome-extension://switchy-test/onboarding.html" }]);
@@ -111,6 +117,22 @@ test("background injects existing normal tabs and skips protected browser tabs",
     background.events.updated.dispatch(2, { status: "complete" });
     await settle();
     assert.equal(background.injected.length, 6, "activation and completed navigation retry injection");
+  } finally {
+    background.restore();
+  }
+});
+
+test("background opens onboarding once for an un-onboarded update", async () => {
+  const background = await bootBackground([]);
+  try {
+    background.events.installed.listeners[0]({ reason: "update" });
+    await settle();
+    assert.deepEqual(background.createdTabs, [{ url: "chrome-extension://switchy-test/onboarding.html" }]);
+
+    background.localData["recent-tab-switcher:onboarding-seen:v1"] = true;
+    background.events.installed.listeners[0]({ reason: "update" });
+    await settle();
+    assert.equal(background.createdTabs.length, 1, "completed onboarding is not reopened on later updates");
   } finally {
     background.restore();
   }

@@ -18,6 +18,14 @@
       shortcut = shortcutApi.DEFAULT_SHORTCUT;
     }
     render("Ready to use on a regular website.");
+    // This records that the welcome screen was actually delivered. It lets
+    // upgrades repair older installs once without reopening onboarding after
+    // the user has already seen it.
+    try {
+      await chrome.storage.local.set({ "recent-tab-switcher:onboarding-seen:v1": true });
+    } catch {
+      // Shortcut configuration remains fully usable if storage is unavailable.
+    }
   }
 
   function render(message, isError = false) {
