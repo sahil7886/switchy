@@ -50,23 +50,23 @@ test("shortcut normalization and labels are safe for corrupt stored settings", a
   assert.equal(shortcut.keyLabel("NumpadDivide"), "Num /");
 });
 
-test("favicon guard allows public HTTPS icons and blocks local-network addresses", async () => {
+test("favicon guard allows public page URLs and blocks local-network addresses", async () => {
   const { SwitchyFavicon: favicon } = await loadBrowserGlobal("favicon-guard.js");
-  const safe = ["https://www.apple.com/favicon.ico", "https://cdn.example.com/icon.png?size=32"];
+  const safe = ["https://www.apple.com/", "http://example.com/work?view=board"];
   const blocked = [
-    "http://www.apple.com/favicon.ico",
-    "https://localhost/favicon.ico",
-    "https://router.local/favicon.ico",
-    "https://printer.lan/favicon.ico",
-    "https://intranet/favicon.ico",
-    "https://10.0.0.1/favicon.ico",
-    "https://172.16.0.1/favicon.ico",
-    "https://192.168.1.1/favicon.ico",
-    "https://169.254.1.1/favicon.ico",
-    "https://[::1]/favicon.ico",
+    "file:///Users/sahil/Notes.html",
+    "https://localhost/",
+    "https://router.local/",
+    "https://printer.lan/",
+    "https://intranet/",
+    "https://10.0.0.1/",
+    "https://172.16.0.1/",
+    "https://192.168.1.1/",
+    "https://169.254.1.1/",
+    "https://[::1]/",
     "not a url",
   ];
 
-  for (const url of safe) assert.equal(favicon.safeUrl(url), url);
-  for (const url of blocked) assert.equal(favicon.safeUrl(url), "", url);
+  for (const url of safe) assert.equal(favicon.safePageUrl(url), url);
+  for (const url of blocked) assert.equal(favicon.safePageUrl(url), "", url);
 });

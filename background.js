@@ -265,7 +265,10 @@ async function sendOverlay(session, type) {
       items: session.items.map((tab) => ({
         id: tab.id,
         title: tab.title || "Untitled tab",
-        favicon: SwitchyFavicon.safeUrl(tab.favIconUrl),
+        // The page URL is passed to Chrome's internal favicon endpoint in the
+        // content script. Do not send favIconUrl: rendering it in a webpage
+        // makes that webpage initiate an external image request.
+        pageUrl: SwitchyFavicon.safePageUrl(tab.url),
         active: tab.id === session.originTabId,
       })),
       selectedIndex: session.selectedIndex,

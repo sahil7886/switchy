@@ -12,9 +12,9 @@ Hold your shortcut and tap its final key to move through the tabs you used most 
 
 Choose the shortcut that works for you. Switchy supports Control and/or Option (Alt) plus a regular key, and prevents unsupported or browser-reserved combinations from being saved.
 
-Switchy has no server, analytics, or telemetry, and it does not transmit browsing data to Switchy. It keeps the current session's recent-tab order in extension session storage and saves your shortcut in local extension storage. To display favicons, it may load the tab's public HTTPS favicon with no referrer.
+Switchy has no server, analytics, or telemetry, and it does not transmit browsing data to Switchy. It keeps the current session's recent-tab order in extension session storage and saves your shortcut in local extension storage. To display favicons, it uses Chrome's internal favicon endpoint instead of making the active webpage load a tab's external favicon URL.
 
-To avoid invoking a website's Local Network Access permission, Switchy never renders favicons that use HTTP or point to local/private/internal addresses. Those tabs use the same visual fallback as a missing favicon.
+To avoid invoking a website's Local Network Access permission, Switchy does not load external favicon URLs from the active webpage. Local/private/internal tabs use the same visual fallback as a missing favicon.
 
 ## Suggested category
 
@@ -30,6 +30,7 @@ Productivity
   - `<all_urls>`: presents the in-page switcher and receives the configured shortcut on normal webpages.
   - `storage`: saves the current session's MRU order and the locally chosen shortcut.
   - `scripting`: makes the shortcut available immediately in normal webpages that were already open when Switchy is installed or updated.
+  - `favicon`: asks Chrome for its own cached favicon representation, so the in-page overlay does not fetch third-party favicon URLs itself.
 
 ## Reviewer test instructions
 

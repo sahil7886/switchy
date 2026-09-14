@@ -16,6 +16,7 @@ async function bootSwitcher({ shortcut, width = 1280 } = {}) {
   window.chrome = {
     runtime: {
       onMessage: runtimeEvents,
+      getURL: (path) => `chrome-extension://switchy-test/${path}`,
       sendMessage: (message) => {
         runtimeMessages.push(message);
         return Promise.resolve(message.type === "switcher-cycle" ? { sessionId: "session-1" } : { ok: true });
@@ -37,19 +38,22 @@ function items(count) {
   return Array.from({ length: count }, (_, index) => ({
     id: index + 1,
     title: `Tab ${index + 1}`,
-    favicon: index === 0 ? "http://192.168.1.1/favicon.ico" : `https://example.com/icon-${index + 1}.png`,
+    pageUrl: index === 0 ? "https://192.168.1.1/" : `https://example.com/tab-${index + 1}`,
   }));
 }
 
-test("switcher renders a responsive row, safe favicons, and a maximum of nine cells", async () => {
+test("switcher renders a responsive row, Chrome-provided favicons, and a maximum of nine cells", async () => {
   const { window, runtimeEvents, runtimeMessages } = await bootSwitcher();
   runtimeEvents.listeners[0]({ type: "open", sessionId: "session-1", items: items(10), selectedIndex: 1 });
 
   const host = window.document.querySelector("#recent-tab-switcher-root");
   const strip = host.shadowRoot.querySelector(".strip");
   assert.equal(strip.children.length, 9);
-  assert.equal(strip.children[0].querySelector("img"), null, "private favicon uses fallback");
-  assert.match(strip.children[1].querySelector("img").src, /https:\/\/example\.com\/icon-2\.png/);
+  assert.equal(strip.children[0].querySelector("img"), null, "private page uses fallback");
+  const imageUrl = strip.children[1].querySelector("img").src;
+  assert.match(imageUrl, /^chrome-extension:\/\/switchy-test\/_favicon\/\?/);
+  assert.match(imageUrl, /pageUrl=https%3A%2F%2Fexample\.com%2Ftab-2/);
+  assert.doesNotMatch(imageUrl, /^https?:\/\//, "the page never loads the external favicon URL");
   assert.equal(strip.children[1].classList.contains("selected"), true);
   assert.deepEqual(JSON.parse(JSON.stringify(runtimeMessages.at(-1))), { type: "switcher-ready", sessionId: "session-1", capacity: 9 });
 

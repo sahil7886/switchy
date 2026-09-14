@@ -10,10 +10,15 @@ test("manifest is MV3, uses the expected runtime files, and declares only requir
   assert.equal(manifest.manifest_version, 3);
   assert.equal(manifest.name, "Switchy");
   assert.match(manifest.version, /^\d+\.\d+\.\d+$/);
-  assert.deepEqual(manifest.permissions, ["tabs", "storage", "scripting"]);
+  assert.deepEqual(manifest.permissions, ["tabs", "storage", "scripting", "favicon"]);
   assert.deepEqual(manifest.content_scripts[0].js, ["shortcut.js", "favicon-guard.js", "switcher.js"]);
   assert.equal(manifest.content_scripts[0].run_at, "document_start");
   assert.equal(manifest.background.type, "module");
+  assert.deepEqual(manifest.web_accessible_resources, [{
+    resources: ["_favicon/*"],
+    matches: ["<all_urls>"],
+    extension_ids: ["*"],
+  }]);
 
   const runtimeFiles = [
     manifest.background.service_worker,

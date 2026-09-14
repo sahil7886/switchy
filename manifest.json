@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Switchy",
-  "version": "0.4.3",
+  "version": "0.5.0",
   "description": "A sleek MRU tab switcher for Chromium browsers.",
   "icons": {
     "16": "assets/icon-16.png",
@@ -9,7 +9,7 @@
     "48": "assets/icon-48.png",
     "128": "assets/icon-128.png"
   },
-  "permissions": ["tabs", "storage", "scripting"],
+  "permissions": ["tabs", "storage", "scripting", "favicon"],
   "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "background.js",
@@ -24,6 +24,13 @@
       "js": ["shortcut.js", "favicon-guard.js", "switcher.js"],
       "run_at": "document_start",
       "all_frames": false
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["_favicon/*"],
+      "matches": ["<all_urls>"],
+      "extension_ids": ["*"]
     }
   ],
   "options_ui": {

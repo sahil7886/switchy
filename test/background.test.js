@@ -140,9 +140,9 @@ test("background opens onboarding once for an un-onboarded update", async () => 
 
 test("background opens a safe MRU session and commits a rapid release", async () => {
   const tabs = [
-    { id: 1, windowId: 9, active: true, title: "Current", favIconUrl: "https://example.com/current.ico", lastAccessed: 300 },
-    { id: 2, windowId: 9, active: false, title: "Local", favIconUrl: "http://192.168.1.1/favicon.ico", lastAccessed: 200 },
-    { id: 3, windowId: 9, active: false, title: "Previous", favIconUrl: "https://example.com/previous.ico", lastAccessed: 100 },
+    { id: 1, windowId: 9, active: true, title: "Current", url: "https://current.example/", favIconUrl: "https://example.com/current.ico", lastAccessed: 300 },
+    { id: 2, windowId: 9, active: false, title: "Local", url: "http://192.168.1.1/", favIconUrl: "http://192.168.1.1/favicon.ico", lastAccessed: 200 },
+    { id: 3, windowId: 9, active: false, title: "Previous", url: "https://previous.example/", favIconUrl: "https://example.com/previous.ico", lastAccessed: 100 },
   ];
   const background = await bootBackground(tabs);
   try {
@@ -157,7 +157,8 @@ test("background opens a safe MRU session and commits a rapid release", async ()
     assert.deepEqual(releaseResponse, { ok: true });
     const open = background.sentMessages.find((entry) => entry.message.type === "open");
     assert.equal(open.tabId, 1);
-    assert.equal(open.message.items[1].favicon, "", "local favicon is stripped before page delivery");
+    assert.equal(open.message.items[0].pageUrl, "https://current.example/", "the browser URL—not its external favicon URL—is delivered");
+    assert.equal(open.message.items[1].pageUrl, "", "local page URLs are stripped before page delivery");
     assert.deepEqual(background.updatedTabs, [{ id: 2, changes: { active: true } }]);
   } finally {
     background.restore();

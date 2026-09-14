@@ -156,7 +156,7 @@
       const frame = document.createElement("span");
       frame.className = "favicon-frame";
       const fallback = makeFallback(item.title);
-      const favicon = SwitchyFavicon.safeUrl(item.favicon);
+      const favicon = nativeFaviconUrl(item.pageUrl);
       if (favicon) {
         const image = document.createElement("img");
         image.src = favicon;
@@ -181,6 +181,23 @@
     fallback.className = "fallback";
     fallback.textContent = (title || "?").trim().slice(0, 1).toUpperCase() || "?";
     return fallback;
+  }
+
+  function nativeFaviconUrl(pageUrl) {
+    const safePageUrl = SwitchyFavicon.safePageUrl(pageUrl);
+    if (!safePageUrl) return "";
+
+    try {
+      // Chrome serves this URL itself. The active webpage therefore does not
+      // fetch an arbitrary remote favicon and cannot trigger its own Local
+      // Network Access prompt through Switchy.
+      const endpoint = new URL(chrome.runtime.getURL("_favicon/"));
+      endpoint.searchParams.set("pageUrl", safePageUrl);
+      endpoint.searchParams.set("size", "32");
+      return endpoint.href;
+    } catch {
+      return "";
+    }
   }
 
   function preview(index) {

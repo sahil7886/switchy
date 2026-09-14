@@ -1,10 +1,10 @@
 (() => {
-  function safeUrl(value) {
+  function safePageUrl(value) {
     if (typeof value !== "string" || !value) return "";
 
     try {
       const url = new URL(value);
-      if (url.protocol !== "https:" || isPotentiallyLocalHost(url.hostname)) return "";
+      if (!/^https?:$/.test(url.protocol) || isPotentiallyLocalHost(url.hostname)) return "";
       return url.href;
     } catch {
       return "";
@@ -37,5 +37,5 @@
       || (first === 198 && (second === 18 || second === 19));
   }
 
-  globalThis.SwitchyFavicon = { safeUrl };
+  globalThis.SwitchyFavicon = { safePageUrl };
 })();
