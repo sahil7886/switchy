@@ -46,6 +46,22 @@ test("onboarding click starts shortcut capture and remains active after blur", a
   assert.match(window.document.querySelector("#shortcut-status").textContent, /Press Control/);
 });
 
+test("onboarding starts capture from mouse, touch, and keyboard activation", async () => {
+  for (const activation of ["mousedown", "touchstart"]) {
+    const { window } = await bootOnboarding();
+    const capture = window.document.querySelector("#shortcut-capture");
+    capture.dispatchEvent(new window.Event(activation, { bubbles: true, cancelable: true }));
+    assert.equal(capture.classList.contains("listening"), true, `${activation} starts capture`);
+  }
+
+  const { window } = await bootOnboarding();
+  const capture = window.document.querySelector("#shortcut-capture");
+  capture.dispatchEvent(new window.KeyboardEvent("keydown", {
+    key: "Enter", bubbles: true, cancelable: true,
+  }));
+  assert.equal(capture.classList.contains("listening"), true, "Enter starts capture");
+});
+
 test("onboarding marks the welcome screen seen once it has rendered", async () => {
   const { setCalls } = await bootOnboarding();
   assert.deepEqual(JSON.parse(JSON.stringify(setCalls)), [

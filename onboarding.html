@@ -4,8 +4,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Switchy</title>
   <link rel="stylesheet" href="onboarding.css">
-  <script src="shortcut.js" defer></script>
-  <script src="onboarding.js" defer></script>
   <main>
     <div class="mark" aria-hidden="true"><i></i><i></i><i></i></div>
     <p class="eyebrow">SWITCHY</p>
@@ -38,4 +36,8 @@
     <aside class="protected-page-notice"><b>Test it on a regular website.</b> Chrome does not let extensions receive keyboard events on <code>chrome://</code> pages, the Chrome Web Store, or other protected browser pages. Close that tab and try the shortcut on a normal website instead.</aside>
     <p class="footnote">Runs locally with no Switchy server or analytics. It stores the MRU order only for the current browser session.</p>
   </main>
+  <!-- Keep scripts after the UI so the capture control is ready before code
+       runs, including in Chromium-based browsers with custom tab handling. -->
+  <script src="shortcut.js"></script>
+  <script src="onboarding.js"></script>
 </html>

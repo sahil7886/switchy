@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Switchy",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "A sleek MRU tab switcher for Chromium browsers.",
   "icons": {
     "16": "assets/icon-16.png",

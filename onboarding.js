@@ -40,7 +40,13 @@
     if (listening) return;
     listening = true;
     render("Press Control or Option (Alt), then a regular key. Press Esc to stop.");
-    captureButton.focus({ preventScroll: true });
+    // `preventScroll` is supported by current Chrome, but a plain focus
+    // fallback keeps capture working in Chromium forks with older focus APIs.
+    try {
+      captureButton.focus({ preventScroll: true });
+    } catch {
+      captureButton.focus();
+    }
   }
 
   function stopListening(message, isError = false) {
@@ -58,18 +64,28 @@
     }
   }
 
-  captureButton.addEventListener("pointerdown", (event) => {
+  function beginCapture(event) {
     event.preventDefault();
     startListening();
+  }
+
+  // Chromium variants do not all surface the same first pointer event. Keep
+  // all activation paths, and make each idempotent through startListening().
+  captureButton.addEventListener("pointerdown", beginCapture);
+  captureButton.addEventListener("mousedown", beginCapture);
+  captureButton.addEventListener("touchstart", beginCapture, { passive: false });
+  captureButton.addEventListener("click", beginCapture);
+  captureButton.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    beginCapture(event);
   });
-  captureButton.addEventListener("click", startListening);
 
   reset.addEventListener("click", () => {
     listening = false;
     void save({ ...shortcutApi.DEFAULT_SHORTCUT });
   });
 
-  window.addEventListener("keydown", (event) => {
+  function handleCapturedKey(event) {
     if (!listening) return;
     event.preventDefault();
     event.stopImmediatePropagation();
@@ -91,5 +107,9 @@
       return;
     }
     void save(result.shortcut);
-  }, true);
+  }
+
+  // Attach at the window capture phase, before page controls or browser UI
+  // get an opportunity to handle a captured key.
+  window.addEventListener("keydown", handleCapturedKey, true);
 })();
