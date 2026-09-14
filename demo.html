@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Switchy — Visual Demo</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; overflow: hidden; color: #e4e2e8; background: radial-gradient(circle at 15% 18%, #282d51 0, transparent 30%), radial-gradient(circle at 80% 80%, #422545 0, transparent 32%), #111116; font: 16px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    .browser { position: absolute; inset: 36px; overflow: hidden; border: 1px solid rgba(255,255,255,.16); border-radius: 14px; background: #1b1b21; box-shadow: 0 24px 80px rgba(0,0,0,.42); }
+    .toolbar { display: flex; align-items: center; gap: 11px; height: 54px; padding: 0 18px; border-bottom: 1px solid rgba(255,255,255,.09); background: #202027; }
+    .dots { display: flex; gap: 7px; }.dots i { width: 10px; height: 10px; border-radius: 50%; background: #f0786a; }.dots i:nth-child(2){background:#e7b65f}.dots i:nth-child(3){background:#6dce73}
+    .address { flex: 1; height: 28px; border-radius: 7px; background: #303039; }
+    .site { padding: 54px 9vw; }.site p { max-width: 460px; color: #b8b5bf; }.site h1 { margin: 0; max-width: 540px; font-size: clamp(42px, 7vw, 76px); line-height: 1; letter-spacing: -.055em; }
+    .layer { position: fixed; inset: 0; display: grid; place-items: center; pointer-events: none; }
+    .switcher { display: flex; padding: 10px; border: 1px solid rgba(255,255,255,.18); border-radius: 17px; background: rgba(25,25,28,.79); box-shadow: 0 20px 60px rgba(0,0,0,.29), inset 0 1px 0 rgba(255,255,255,.1); backdrop-filter: blur(25px) saturate(1.25); }
+    .strip { display: flex; gap: 7px; }.cell { display: grid; width: 58px; height: 58px; place-items: center; border: 1px solid transparent; border-radius: 12px; background: rgba(255,255,255,.075); box-shadow: inset 0 1px rgba(255,255,255,.08); }.cell[hidden] { display: none; }.cell.selected { border-color: rgba(255,255,255,.6); background: #f7f7f8; box-shadow: 0 6px 18px rgba(0,0,0,.26), inset 0 1px rgba(255,255,255,.9); transform: translateY(-2px); }.favicon { display: grid; width: 30px; height: 30px; place-items: center; border-radius: 9px; background: #4c4a58; color: white; font: 800 15px/1 system-ui; }.cell.selected .favicon { background: #2c2b34; }.favicon.green { background: #167850; }.favicon.blue { background: #1d69cf; }.favicon.red { background: #c94545; }.favicon.amber { background: #d98c16; }.favicon.cyan { background: #008897; }.favicon.black { background: #101014; }
+    .hint { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,.62); font-size: 13px; letter-spacing: .01em; }.hint kbd { padding: 3px 6px; border: 1px solid rgba(255,255,255,.2); border-radius: 5px; background: rgba(255,255,255,.1); color: white; font: 650 12px/1 ui-monospace, monospace; }
+  </style>
+  <div class="browser"><div class="toolbar"><span class="dots"><i></i><i></i><i></i></span><div class="address"></div></div><main class="site"><p>Demo website</p><h1>Your focused work, uninterrupted.</h1><p>The switcher stays local and appears over the active page only while you hold the shortcut.</p></main></div>
+  <div class="layer"><div class="switcher"><div class="strip" aria-label="Recent tabs"><div class="cell"><span class="favicon blue">G</span></div><div class="cell selected"><span class="favicon red">F</span></div><div class="cell"><span class="favicon green">S</span></div><div class="cell"><span class="favicon amber">N</span></div><div class="cell"><span class="favicon cyan">A</span></div><div class="cell"><span class="favicon black">⌘</span></div><div class="cell"><span class="favicon">R</span></div><div class="cell"><span class="favicon green">V</span></div><div class="cell"><span class="favicon blue">P</span></div></div></div></div>
+  <p class="hint">Hold <kbd>⌃`</kbd> · tap <kbd>`</kbd> to cycle · release to switch · <kbd>Esc</kbd> cancels</p>
+  <script>
+    const cells = [...document.querySelectorAll('.cell')];
+    const fitCells = () => {
+      const capacity = Math.max(1, Math.min(9, Math.floor((innerWidth - 31) / 65)));
+      cells.forEach((cell, index) => { cell.hidden = index >= capacity; });
+    };
+    addEventListener('resize', fitCells);
+    fitCells();
+  </script>
+</html>

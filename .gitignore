@@ -1,0 +1,8 @@
+# Personal screen-recording renders, not part of the extension source.
+video-edit/
+
+# Generated Web Store upload archives.
+*.zip
+
+# macOS metadata.
+.DS_Store

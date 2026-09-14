@@ -1,0 +1,36 @@
+:root { color-scheme: light dark; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #101014; color: #f7f7f8; }
+main { width: min(600px, calc(100vw - 40px)); padding: 72px 0; }
+.mark { display: flex; gap: 7px; margin-bottom: 30px; }
+.mark i { width: 34px; height: 34px; border-radius: 10px; background: #4c4a58; border: 1px solid rgba(255,255,255,.15); }
+.mark i:nth-child(2) { background: #f4f3f4; transform: translateY(-4px); }
+.eyebrow { margin: 0 0 12px; color: #a7a5ae; font-size: 12px; font-weight: 750; letter-spacing: .13em; }
+h1 { max-width: 540px; margin: 0; font-size: clamp(36px, 7vw, 62px); line-height: 1.04; letter-spacing: -.055em; }
+.lede { max-width: 500px; margin: 22px 0 35px; color: #c1bfc7; font-size: 17px; line-height: 1.55; }
+.shortcut-card { margin: 0 0 24px; padding: 18px; border: 1px solid rgba(255,255,255,.14); border-radius: 16px; background: rgba(255,255,255,.045); }
+.shortcut-card-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; }
+.shortcut-card .eyebrow { margin-bottom: 6px; }
+.shortcut-copy { margin: 0; color: #bab8c1; font-size: 13px; line-height: 1.4; }
+.shortcut-capture { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 17px; padding: 15px 16px; border: 1px solid rgba(255,255,255,.22); border-radius: 11px; background: rgba(0,0,0,.17); color: #fff; cursor: pointer; text-align: left; }
+.shortcut-capture:hover, .shortcut-capture:focus-visible, .shortcut-capture.listening { border-color: rgba(255,255,255,.65); outline: none; background: rgba(255,255,255,.1); }
+.shortcut-value { font: 650 15px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace; }
+.shortcut-hint { color: #a9a7b1; font-size: 12px; white-space: nowrap; }
+.shortcut-status { min-height: 19px; margin: 10px 1px 0; color: #a8d4ba; font-size: 12px; line-height: 1.45; }
+.shortcut-status.error { color: #ffb5ae; }
+.shortcut-rules { margin: 13px 0 0; padding-left: 18px; color: #aaa8b2; font-size: 12px; line-height: 1.55; }
+.shortcut-rules li + li { margin-top: 4px; }
+.reset { flex: 0 0 auto; padding: 8px 10px; border: 1px solid rgba(255,255,255,.16); border-radius: 8px; background: transparent; color: #dedce3; font: 650 12px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+.reset:hover { background: rgba(255,255,255,.1); }
+.steps { display: grid; gap: 12px; margin-bottom: 34px; }
+.steps div { display: flex; align-items: flex-start; gap: 13px; padding: 15px; border: 1px solid rgba(255,255,255,.12); border-radius: 14px; background: rgba(255,255,255,.045); }
+.steps span { display: grid; flex: 0 0 24px; width: 24px; height: 24px; place-items: center; border-radius: 8px; background: #f4f3f4; color: #18171c; font-size: 12px; font-weight: 800; }
+.steps p { margin: 1px 0 0; color: #d6d4db; line-height: 1.45; }
+kbd { padding: 2px 6px; border: 1px solid rgba(255,255,255,.24); border-bottom-color: rgba(255,255,255,.4); border-radius: 6px; background: rgba(255,255,255,.1); color: #fff; font: 600 .9em/1.2 ui-monospace, SFMono-Regular, Menlo, monospace; }
+button { padding: 12px 15px; border: 0; border-radius: 10px; background: #f7f7f8; color: #17161b; cursor: pointer; font: 750 14px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+button:hover { background: white; }
+.footnote { max-width: 510px; margin: 28px 0 0; color: #85828d; font-size: 13px; line-height: 1.5; }
+.protected-page-notice { margin-top: 23px; padding: 13px 15px; border: 1px solid rgba(234, 196, 108, .25); border-radius: 12px; color: #d5ccb4; background: rgba(234, 196, 108, .08); font-size: 13px; line-height: 1.5; }
+.protected-page-notice b { color: #f0ddaa; }
+code { font: .94em ui-monospace, SFMono-Regular, Menlo, monospace; }
+@media (max-width: 520px) { .shortcut-card-heading { flex-direction: column; gap: 11px; } .shortcut-capture { align-items: flex-start; flex-direction: column; gap: 7px; } }

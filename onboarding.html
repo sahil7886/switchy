@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Switchy</title>
+  <link rel="stylesheet" href="onboarding.css">
+  <script src="shortcut.js" defer></script>
+  <script src="onboarding.js" defer></script>
+  <main>
+    <div class="mark" aria-hidden="true"><i></i><i></i><i></i></div>
+    <p class="eyebrow">SWITCHY</p>
+    <h1>Switch tabs like an app switcher.</h1>
+    <p class="lede">Choose a shortcut, then hold its modifier and tap its final key to move through your nine most recent tabs. Release the modifier to switch.</p>
+    <section class="shortcut-card" aria-labelledby="shortcut-heading">
+      <div class="shortcut-card-heading">
+        <div>
+          <p class="eyebrow" id="shortcut-heading">YOUR SHORTCUT</p>
+          <p class="shortcut-copy">Click the control, then press the combination you want to use.</p>
+        </div>
+        <button class="reset" id="reset-shortcut" type="button">Use default</button>
+      </div>
+      <button class="shortcut-capture" id="shortcut-capture" type="button" aria-describedby="shortcut-status">
+        <span class="shortcut-value" id="shortcut-value">Control + `</span>
+        <span class="shortcut-hint" id="shortcut-hint">Click to choose</span>
+      </button>
+      <p class="shortcut-status" id="shortcut-status" role="status">Default: Control + `</p>
+      <ul class="shortcut-rules">
+        <li>Use <b>Control</b>, <b>Option (Alt)</b>, or both, plus one regular key.</li>
+        <li>Add <kbd>⇧</kbd> to the same shortcut to cycle backward.</li>
+        <li><b>Command (⌘)</b>, Shift-based shortcuts, modifier-only keys, and browser/OS-reserved combinations are unavailable.</li>
+      </ul>
+    </section>
+    <div class="steps">
+      <div><span>1</span><p>Hold the shortcut and tap its last key to cycle.</p></div>
+      <div><span>2</span><p>Add <kbd>⇧</kbd> to reverse. Press <kbd>Esc</kbd> to cancel.</p></div>
+      <div><span>3</span><p>The row automatically contracts on smaller windows.</p></div>
+    </div>
+    <aside class="protected-page-notice"><b>Test it on a regular website.</b> Chrome does not let extensions receive keyboard events on <code>chrome://</code> pages, the Chrome Web Store, or other protected browser pages. Close that tab and try the shortcut on a normal website instead.</aside>
+    <p class="footnote">Runs locally with no Switchy server or analytics. It stores the MRU order only for the current browser session.</p>
+  </main>
+</html>
